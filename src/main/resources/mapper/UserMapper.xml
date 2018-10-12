@@ -6,7 +6,7 @@
         insert into users(
            id, username, name, password, email, created_at, updated_at)
         values(
-           #{id}, #{username}, #{name}, #{password}, #{email}, #{createTime, jdbcType = DATETIME}, #{updatedTime, jdbcType = DATETIME}
+           #{id}, #{username}, #{name}, #{password}, #{email}, #{createdAt}, #{updatedAt}
         )
     </insert>
 </mapper>
