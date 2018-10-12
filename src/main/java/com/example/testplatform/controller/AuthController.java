@@ -7,14 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    @Resource
+    private AuthService authService;
+
     @PostMapping(value = "/signup",produces = "application/json",consumes = "application/json")
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody SignupRequest request) {
-        return new AuthService().registerUser(request);
+        return authService.registerUser(request);
     }
 
 }
