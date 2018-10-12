@@ -26,8 +26,8 @@ public class AuthServiceTest {
         request.setConfirmedPassword("123456");
         request.setEmail("tangxi669@163.com");
 
-        ResponseEntity apiResponse = authService.registerUser(request);
-        Assert.assertTrue(apiResponse.getStatusCodeValue()==200);
+        ResponseEntity<ApiResponse> apiResponse = authService.registerUser(request);
+
         System.out.println(apiResponse.toString());
     }
 }
