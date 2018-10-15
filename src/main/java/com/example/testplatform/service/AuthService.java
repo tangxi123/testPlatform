@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +23,8 @@ public class AuthService {
 
     @Autowired
     UserMapper userMapper;
-
+    
+    @Transactional
     public ResponseEntity<ApiResponse> registerUser(SignupRequest request){
         if(userMapper.existsByUsername(request.getUsername())){
             return new ResponseEntity<ApiResponse>(new ApiResponse(false,"用户注册失败，存在相同的用户名"),HttpStatus.BAD_REQUEST);
