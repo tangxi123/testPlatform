@@ -9,4 +9,5 @@
            #{id}, #{username}, #{name}, #{password}, #{email}, #{createdAt}, #{updatedAt}
         )
     </insert>
+
 </mapper>
