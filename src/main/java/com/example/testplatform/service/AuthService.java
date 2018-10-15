@@ -42,6 +42,8 @@ public class AuthService {
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
         userMapper.insertUser(user);
+        Long userId = user.getId();
+        userMapper.insertUserRole(userId,2);
         return new ResponseEntity<ApiResponse>(new ApiResponse(true,"用户注册成功!"),HttpStatus.OK);
     }
 
