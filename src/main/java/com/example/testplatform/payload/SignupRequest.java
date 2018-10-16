@@ -26,6 +26,8 @@ public class SignupRequest {
     @Email
     private String email;
 
+    public SignupRequest(){}
+
     public String getName() {
         return name;
     }

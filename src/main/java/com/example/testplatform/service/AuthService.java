@@ -9,7 +9,6 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +16,15 @@ import java.time.LocalDateTime;
 
 @Service
 @MapperScan("com.example.testplatform.mapper")
+
 public class AuthService {
 //    @Autowired
 //    PasswordEncoder passwordEncoder;
 
     @Autowired
     UserMapper userMapper;
-    
+
+
     @Transactional
     public ResponseEntity<ApiResponse> registerUser(SignupRequest request){
         if(userMapper.existsByUsername(request.getUsername())){
