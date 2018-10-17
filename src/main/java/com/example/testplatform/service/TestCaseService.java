@@ -39,30 +39,31 @@ public class TestCaseService {
 //        loginRequest.setUsernameOrEmail("tangxi");
 //        loginRequest.setPassword("123456");
 //
-//        SignupRequest signupRequest = new SignupRequest();
-//        signupRequest.setUsername("tester");
-//        signupRequest.setName("tester");
-//        signupRequest.setEmail("tang@12345");
-//        signupRequest.setPassword("123456");
-//        signupRequest.setConfirmedPassword("123456");
+        SignupRequest signupRequest = new SignupRequest();
+        signupRequest.setUsername("tester");
+        signupRequest.setName("tester");
+        signupRequest.setEmail("tang@12345");
+        signupRequest.setPassword("123456");
+        signupRequest.setConfirmedPassword("123456");
+
+        HttpEntity<SignupRequest> entity = new HttpEntity<>(signupRequest);
 
 
 
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-        map.add("username", "tester");
-        map.add("name", "tester");
-        map.add("email", "tang@1234.com");
-        map.add("password", "123456");
-        map.add("confirmedPassword", "123456");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        final HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map,headers);
+//        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+//        map.add("username", "tester");
+//        map.add("name", "tester");
+//        map.add("email", "tang@1234.com");
+//        map.add("password", "123456");
+//        map.add("confirmedPassword", "123456");
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        final HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map,headers);
 
         ResponseEntity<ApiResponse> response;
-//        response = rest.postForEntity(url,loginRequest,ApiResponse.class);
-        response = rest.exchange("http://localhost:8080/api/auth/signup",HttpMethod.POST,entity,ApiResponse.class);
+        response = rest.postForEntity("http://localhost:8080/api/auth/signup",entity,ApiResponse.class);
         response.getBody().toString();
 
 
