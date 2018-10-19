@@ -1,10 +1,8 @@
 package com.example.testplatform.payload;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.util.MultiValueMap;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.Map;
 
 public class ApiEntityRequest {
@@ -17,7 +15,17 @@ public class ApiEntityRequest {
 
     private Map<String, String> headers;
 
-    private Object body;
+    private Map<String, String> parameters;
+
+    private Map<String, ?> expected;
+
+    public Map<String, ?> getExpected() {
+        return expected;
+    }
+
+    public void setExpected(Map<String, ?> expected) {
+        this.expected = expected;
+    }
 
     public String getTestname() {
         return testname;
@@ -53,11 +61,11 @@ public class ApiEntityRequest {
         this.headers = headers;
     }
 
-    public Object getBody() {
-        return body;
+    public Map<String, String> getParameters() {
+        return parameters;
     }
 
-    public void setBody(Object body) {
-        this.body = body;
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
     }
 }

@@ -48,7 +48,18 @@ public class AuthService {
         return new ResponseEntity<ApiResponse>(new ApiResponse(true,"用户注册成功!"),HttpStatus.OK);
     }
 
-    public ResponseEntity<ApiResponse> login(String usernameOrEmail, String password){
+//    public ResponseEntity<ApiResponse> login(String usernameOrEmail, String password){
+//        if(userMapper.loginWithUsername(usernameOrEmail,password)!=null){
+//            return new ResponseEntity<ApiResponse>(new ApiResponse(true,"登录成功"),HttpStatus.OK);
+//        }else if(userMapper.loginWithEmail(usernameOrEmail,password)!=null){
+//            return new ResponseEntity<ApiResponse>(new ApiResponse(true,"登录成功"),HttpStatus.OK);
+//        }
+//        return new ResponseEntity<ApiResponse>(new ApiResponse(false,"登录失败，用户名邮箱或密码错误"),HttpStatus.BAD_REQUEST);
+//    }
+
+    public ResponseEntity<ApiResponse> login(LoginRequest request){
+        String usernameOrEmail = request.getUsernameOrEmail();
+        String password = request.getPassword();
         if(userMapper.loginWithUsername(usernameOrEmail,password)!=null){
             return new ResponseEntity<ApiResponse>(new ApiResponse(true,"登录成功"),HttpStatus.OK);
         }else if(userMapper.loginWithEmail(usernameOrEmail,password)!=null){

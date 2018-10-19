@@ -17,7 +17,7 @@ public class TestCaseController {
     TestCaseService testCaseService;
 
     @PostMapping(value = "/create",produces = "application/json",consumes = "application/json")
-    public ResponseEntity<ApiResponse> createTestCase(@RequestBody ApiEntityRequest request){
+    public ResponseEntity<?> createTestCase(@RequestBody ApiEntityRequest request){
         return testCaseService.createTestCase(request);
     }
 }

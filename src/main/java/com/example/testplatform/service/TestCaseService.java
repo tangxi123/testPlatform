@@ -1,73 +1,75 @@
 package com.example.testplatform.service;
 
+import com.example.testplatform.errorhandle.CustomResponseErrorHandler;
+import com.example.testplatform.exception.CustomException;
+import com.example.testplatform.mapper.TestCaseMapper;
+import com.example.testplatform.model.Apis;
 import com.example.testplatform.payload.ApiEntityRequest;
 import com.example.testplatform.payload.ApiResponse;
-import com.example.testplatform.payload.LoginRequest;
-import com.example.testplatform.payload.SignupRequest;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.awt.print.Book;
 import java.net.URI;
-import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
+@MapperScan("com.example.testplatform.mapper")
 public class TestCaseService {
+    @Autowired
+    TestCaseMapper mapper;
 
 
 
-    public ResponseEntity<ApiResponse> createTestCase(ApiEntityRequest request) throws RestClientException{
-//        String testname = request.getTestname();
-//        HttpMethod method = request.getMethod();
-//        URI url = request.getUrl();
-//        Map<String,String> headers = request.getHeaders();
-//        String accept = headers.get("Accept");
-//        String contentType = headers.get("Content-Type");
-////        Map<String,?> body = request.getBody();
-////        Object username = body.get("usernameOrEmail");
-////        Object password = body.get("password");
-//
+    public ResponseEntity<?> createTestCase(ApiEntityRequest request) throws RestClientException {
+        String testname = request.getTestname();
+        HttpMethod method = request.getMethod();
+        URI url = request.getUrl();
+        Map<String, String> headers = request.getHeaders();
+        String accept = headers.get("Accept");
+        String contentType = headers.get("Content-Type");
+        Map<String, String> parameters = request.getParameters();
+        Map<String, ?> expected = request.getExpected();
+        boolean expectedSucess = (Boolean) expected.get("success");
+        String expectedMessage = (String)expected.get("message");
+
+        Apis apis = new Apis();
+        apis.setTestname(testname);
+        apis.setUrl(url);
+        apis.setHeaders(headers);
+        apis.setMethod(method);
+        apis.setParameters(parameters);
+        apis.setCreatedAt(LocalDateTime.now());
+        apis.setUpdatedAt(LocalDateTime.now());
+
+
+        mapper.insertTestcase(apis);
+
+
         RestTemplate rest = new RestTemplate();
-//
-//        LoginRequest loginRequest = new LoginRequest();
-//        loginRequest.setUsernameOrEmail("tangxi");
-//        loginRequest.setPassword("123456");
-//
-        SignupRequest signupRequest = new SignupRequest();
-        signupRequest.setUsername("tester");
-        signupRequest.setName("tester");
-        signupRequest.setEmail("tang@12345");
-        signupRequest.setPassword("123456");
-        signupRequest.setConfirmedPassword("123456");
 
-        HttpEntity<SignupRequest> entity = new HttpEntity<>(signupRequest);
+        ResponseEntity<ApiResponse> response = null;
+        //请求服务的时候，若出现异常，抛出自定义异常，打印出异常栈，异常返回内容，异常信息，最后将异常内容返回
+        try {
+            rest.setErrorHandler(new CustomResponseErrorHandler());
+            response = rest.postForEntity(url, parameters, ApiResponse.class);
+        } catch (CustomException e) {
+            e.printStackTrace();
+            System.out.println(e.getBody());
+            System.out.println(e.getMessage());
 
+            return new ResponseEntity<String>(e.getBody(),HttpStatus.BAD_REQUEST);
+        }
 
-
-//        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-//        map.add("username", "tester");
-//        map.add("name", "tester");
-//        map.add("email", "tang@1234.com");
-//        map.add("password", "123456");
-//        map.add("confirmedPassword", "123456");
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        final HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map,headers);
-
-        ResponseEntity<ApiResponse> response;
-        response = rest.postForEntity("http://localhost:8080/api/auth/signup",entity,ApiResponse.class);
-        response.getBody().toString();
-
-
+//        if(expectedSucess && expectedMessage.equals("登录成功")){
+//            return new ResponseEntity<ApiResponse>(new ApiResponse(true,"测试用例通过"),HttpStatus.OK);
+//        }
         return response;
+
 
     }
 }

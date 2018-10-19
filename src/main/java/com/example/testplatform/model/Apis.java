@@ -13,13 +13,15 @@ public class Apis {
 
     private String testname;
 
-    private String HttpMethod;
+    private HttpMethod method;
 
     private URI url;
 
-    private MultiValueMap<String, String> headers;
+    private Map<String, String> headers;
 
-    private Map<String,?> body;
+    private Map<String, String> parameters;
+
+    private Map<String, ?> expected;
 
     private LocalDateTime createdAt;
 
@@ -41,12 +43,12 @@ public class Apis {
         this.testname = testname;
     }
 
-    public String getHttpMethod() {
-        return HttpMethod;
+    public HttpMethod getMethod() {
+        return method;
     }
 
-    public void setHttpMethod(String httpMethod) {
-        HttpMethod = httpMethod;
+    public void setMethod(HttpMethod method) {
+        this.method = method;
     }
 
     public URI getUrl() {
@@ -57,20 +59,28 @@ public class Apis {
         this.url = url;
     }
 
-    public MultiValueMap<String, String> getHeaders() {
+    public Map<String, String> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(MultiValueMap<String, String> headers) {
+    public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
 
-    public Map<String, ?> getBody() {
-        return body;
+    public Map<String, String> getParameters() {
+        return parameters;
     }
 
-    public void setBody(Map<String, ?> body) {
-        this.body = body;
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
+    public Map<String, ?> getExpected() {
+        return expected;
+    }
+
+    public void setExpected(Map<String, ?> expected) {
+        this.expected = expected;
     }
 
     public LocalDateTime getCreatedAt() {

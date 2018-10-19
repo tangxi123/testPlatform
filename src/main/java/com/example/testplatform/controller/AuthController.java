@@ -1,6 +1,7 @@
 package com.example.testplatform.controller;
 
 import com.example.testplatform.payload.ApiResponse;
+import com.example.testplatform.payload.LoginRequest;
 import com.example.testplatform.payload.SignupRequest;
 import com.example.testplatform.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,18 @@ public class AuthController {
         return authService.registerUser(request);
     }
 
-    @PostMapping(value = "/login")
-    public ResponseEntity<ApiResponse> login(@RequestParam String usernameOrEmail, @RequestParam String password){
-        return authService.login(usernameOrEmail, password);
+//    @PostMapping(value = "/login",produces = "application/json",consumes = "application/json")
+//    public ResponseEntity<ApiResponse> login(@RequestParam String usernameOrEmail, @RequestParam String password){
+//        return authService.login(usernameOrEmail, password);
+//
+//    }
+
+    @PostMapping(value = "/login",produces = "application/json",consumes = "application/json")
+    public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest request){
+        return authService.login(request);
+
+    }
+
 
     }
 
@@ -33,4 +43,4 @@ public class AuthController {
 
 
 
-}
+
