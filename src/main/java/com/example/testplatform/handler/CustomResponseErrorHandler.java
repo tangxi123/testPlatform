@@ -1,14 +1,9 @@
-package com.example.testplatform.errorhandle;
+package com.example.testplatform.handler;
 
 import com.example.testplatform.exception.CustomException;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
-import org.springframework.web.client.ResponseErrorHandler;
-import org.springframework.web.client.RestClientException;
-import org.xml.sax.ErrorHandler;
-import sun.nio.ch.IOUtil;
 
 
 import java.io.BufferedReader;

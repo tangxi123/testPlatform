@@ -1,58 +1,83 @@
 package com.example.testplatform.service;
 
+import com.example.testplatform.mapper.TestCaseMapper;
+import com.example.testplatform.model.Apis;
 import com.example.testplatform.payload.ApiEntityRequest;
 import com.example.testplatform.payload.ApiResponse;
 import com.example.testplatform.payload.SignupRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class TestCaseServiceTest {
     @Autowired
     TestCaseService testCaseService;
 
+    @Autowired
+    TestCaseMapper testCaseMapper;
+
+
+    ApiEntityRequest request = new ApiEntityRequest();
+
+    @Before
+    public void initApiEntityRequest(){
+        try {
+            request.setUrl(new URI("http://localhost:8080"));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        request.setTestname("whenApisNormalThenInsertTestCaseSuccess");
+        request.setMethod(HttpMethod.POST);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Accept","Application/json");
+        headers.put("Content-Type","Application/json");
+        request.setHeaders(headers);
+        Map<String,String> parameters= new HashMap<>();
+        parameters.put("username","tangxi");
+        parameters.put("password","123456");
+        request.setParameters(parameters);
+        Map<String,Object> expected = new HashMap<>();
+        expected.put("success",true);
+        expected.put("message","登录成功");
+        request.setExpected(expected);
+
+
+    }
+
     @Test
-    public void createTestCase() throws JsonProcessingException {
-        RestTemplate rest = new RestTemplate();
+    public void whenApisNormalThenInsertTestCaseSuccess() {
+        ResponseEntity<?> result = testCaseService.createTestCase(request);
+        Assert.assertEquals(200,result.getStatusCodeValue());
+        ApiResponse apiResponse = (ApiResponse) result.getBody();
+        Assert.assertEquals(true,apiResponse.getSuccess());
+        Assert.assertEquals("成功插入测试用例",apiResponse.getMessage());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+    }
 
-//        Map<String, String> map = new HashMap<String, String>();
-//        map.put("username", "tester12");
-//        map.put("name", "tester12");
-//        map.put("email", "tang@123412.com");
-//        map.put("password", "123456");
-//        map.put("confirmedPassword", "123456");
-
-        SignupRequest signupRequest = new SignupRequest();
-        signupRequest.setUsername("tester01");
-        signupRequest.setName("tester01");
-        signupRequest.setEmail("tang@123450.com1");
-        signupRequest.setPassword("123456");
-        signupRequest.setConfirmedPassword("123456");
-
-
-//        String body = new ObjectMapper().writeValueAsString(map);
-//
-//        HttpEntity<String> entity = new HttpEntity<>(body,headers);
-
-//        String response = rest.postForObject("http://localhost:8080/api/auth/signup",entity,String.class);
-
-        ResponseEntity<String> response = rest.postForEntity("http://localhost:8080/api/auth/signup",signupRequest,String.class);
-
-
-
+    @After
+    public void deleteInsetedTestcase(){
+        testCaseMapper.deleteTestcaseByTestname(request.getTestname());
+        System.out.println("删除成功");
     }
 }

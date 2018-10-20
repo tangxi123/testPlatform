@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.testplatform.mapper.TestCaseMapper">
+    <insert id="insertTestcase" parameterType="com.example.testplatform.model.Apis" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO test_case(testname, method, url, headers, parameters, expected,  created_at, updated_at)
+        VALUES (#{testname}, #{method},
+                #{url,javaType=java.net.URI,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.UriTypeHandler},
+                #{headers,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
+                #{parameters,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
+                #{expected,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
+                #{createdAt}, #{updatedAt})
+    </insert>
+    <resultMap id="testcaseResultMap" type="com.example.testplatform.model.Apis">
+        <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="expected" javaType="Map"
+                jdbcType="VARCHAR"
+                property="expected"/>
+    </resultMap>
+    <select id="selectApisByExpected" resultMap="testcaseResultMap" parameterType="Map">
+        SELECT * FROM test_case WHERE expected = #{expected}
+    </select>
+    <delete id="deleteTestcaseByTestname" parameterType="String">
+            DELETE  FROM test_case WHERE testname = #{testname}
+    </delete>
+
+</mapper>
