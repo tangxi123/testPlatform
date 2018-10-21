@@ -11,6 +11,7 @@
                 #{expected,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
                 #{createdAt}, #{updatedAt})
     </insert>
+
     <resultMap id="testcaseResultMap" type="com.example.testplatform.model.Apis">
         <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="expected" javaType="Map"
                 jdbcType="VARCHAR"
@@ -19,8 +20,25 @@
     <select id="selectApisByExpected" resultMap="testcaseResultMap" parameterType="Map">
         SELECT * FROM test_case WHERE expected = #{expected}
     </select>
+
+    <resultMap id="testATestcaseMap" type="com.example.testplatform.model.Apis">
+        <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="expected" javaType="Map" jdbcType="VARCHAR" property="expected"/>
+        <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="headers" javaType="Map" jdbcType="VARCHAR" property="headers"/>
+        <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="parameters" javaType="Map" jdbcType="VARCHAR" property="parameters"/>
+        <result typeHandler="com.example.testplatform.handler.UriTypeHandler" column="url" javaType="java.net.URI" jdbcType="VARCHAR" property="url"/>
+    </resultMap>
+    <select id="selectApisByTestname" resultMap="testATestcaseMap" parameterType="String">
+        SELECT * FROM test_case WHERE testname = #{testname}
+    </select>
+
     <delete id="deleteTestcaseByTestname" parameterType="String">
             DELETE  FROM test_case WHERE testname = #{testname}
     </delete>
+
+    <update id="updateTestResult">
+        UPDATE test_case SET actual = #{actual}, is_passed = #{isPassed}, test_at = #{testAt}
+           WHERE testname = #{testname}
+    </update>
+
 
 </mapper>

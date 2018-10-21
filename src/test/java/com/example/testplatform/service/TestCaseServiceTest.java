@@ -68,10 +68,24 @@ public class TestCaseServiceTest {
     @Test
     public void whenApisNormalThenInsertTestCaseSuccess() {
         ResponseEntity<?> result = testCaseService.createTestCase(request);
-        Assert.assertEquals(200,result.getStatusCodeValue());
         ApiResponse apiResponse = (ApiResponse) result.getBody();
+
+        Assert.assertEquals(200,result.getStatusCodeValue());
         Assert.assertEquals(true,apiResponse.getSuccess());
         Assert.assertEquals("成功插入测试用例",apiResponse.getMessage());
+
+    }
+
+    @Test
+    public void whenTestnameReapetedThenInsertTestCaseFail(){
+        request.setTestname("WhenUsernameAndPasswordTrueThenLogin");
+        ResponseEntity<?> result = testCaseService.createTestCase(request);
+        ApiResponse apiResponse = (ApiResponse) result.getBody();
+
+        Assert.assertEquals(200,result.getStatusCodeValue());
+        Assert.assertEquals(false,apiResponse.getSuccess());
+        Assert.assertEquals("测试用例插入失败",apiResponse.getMessage());
+        request.setTestname(null);
 
     }
 

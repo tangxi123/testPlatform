@@ -6,15 +6,19 @@ import com.example.testplatform.mapper.TestCaseMapper;
 import com.example.testplatform.model.Apis;
 import com.example.testplatform.payload.ApiEntityRequest;
 import com.example.testplatform.payload.ApiResponse;
+import com.example.testplatform.payload.ApiTestRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.constraints.Null;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,12 +52,13 @@ public class TestCaseService {
         apis.setCreatedAt(LocalDateTime.now());
         apis.setUpdatedAt(LocalDateTime.now());
 
-
+        try{
         int result = mapper.insertTestcase(apis);
-        if(result == 1){
             return new ResponseEntity<ApiResponse>(new ApiResponse(true,"成功插入测试用例"),HttpStatus.OK);
+        }catch (DuplicateKeyException e){
+            e.printStackTrace();
         }
-        return new ResponseEntity<ApiResponse>(new ApiResponse(false,"测试用例插入失败"),HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<ApiResponse>(new ApiResponse(false,"测试用例插入失败"),HttpStatus.OK);
 //        //根据expected查询Apis对象
 //        try {
 //            String expe = new ObjectMapper().writeValueAsString(apis.getExpected());
@@ -69,26 +74,39 @@ public class TestCaseService {
 
 
 
-//        RestTemplate rest = new RestTemplate();
-//
-//        ResponseEntity<ApiResponse> response = null;
-//        //请求服务的时候，若出现异常，抛出自定义异常，打印出异常栈，异常返回内容，异常信息，最后将异常内容返回
-//        try {
-//            rest.setErrorHandler(new CustomResponseErrorHandler());
-//            response = rest.postForEntity(url, parameters, ApiResponse.class);
-//        } catch (CustomException e) {
-//            e.printStackTrace();
-//            System.out.println(e.getBody());
-//            System.out.println(e.getMessage());
-//
-//            return new ResponseEntity<String>(e.getBody(),HttpStatus.BAD_REQUEST);
-//        }
-//
-////        if(expectedSucess && expectedMessage.equals("登录成功")){
-////            return new ResponseEntity<ApiResponse>(new ApiResponse(true,"测试用例通过"),HttpStatus.OK);
-////        }
-//        return response;
+    }
 
+    public ResponseEntity<?> testATestCase(ApiTestRequest request){
+        String testname = request.getTestname();
+        Apis apis = mapper.selectApisByTestname(request.getTestname());
+        URI url = apis.getUrl();
+        Map<String,String> parameters= apis.getParameters();
+        String expected = null;
+        try {
+            expected = new ObjectMapper().writeValueAsString(apis.getExpected());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        RestTemplate rest = new RestTemplate();
+        String actual = null;
+        try{
+            rest.setErrorHandler(new CustomResponseErrorHandler());
+            ResponseEntity<ApiResponse> responseEntity = rest.postForEntity(url,parameters,ApiResponse.class);
+            actual = new ObjectMapper().writeValueAsString(responseEntity.getBody());
+        }catch (CustomException e){
+            e.printStackTrace();
+            actual = e.getBody();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        System.out.println("expected"+expected);
+        System.out.println("actual"+actual);
+        if(expected !=null && actual !=null && expected.equals(actual)){
+            mapper.updateTestResult(testname,actual,true,LocalDateTime.now());
+            return new ResponseEntity<ApiResponse>(new ApiResponse(true,"测试通过"),HttpStatus.OK);
+        }
+        mapper.updateTestResult(testname,actual,false,LocalDateTime.now());
+        return  new ResponseEntity<ApiResponse>(new ApiResponse(true,"测试失败"),HttpStatus.OK);
 
     }
 }
