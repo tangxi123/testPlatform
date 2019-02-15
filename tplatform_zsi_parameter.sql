@@ -1,0 +1,2 @@
+INSERT INTO tplatform.zsi_parameter (id, name, descs, type) VALUES (17, 'testCaseId', '从数据库中获取第一条测试用例Id', 'SQL');
+INSERT INTO tplatform.zsi_parameter (id, name, descs, type) VALUES (19, 'testCaseIds', '从数据库中获取第一条测试用例Id', 'SQL');

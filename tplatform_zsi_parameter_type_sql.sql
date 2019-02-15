@@ -1,0 +1,2 @@
+INSERT INTO tplatform.zsi_parameter_type_sql (id, host, port, `database`, user, password, `sql`, param, param_id) VALUES (5, 'localhost', 3306, 'tplatform', 'root', 'tx123456', 'SELECT id FROM zsi_test_case LIMIT 1', 'id', 17);
+INSERT INTO tplatform.zsi_parameter_type_sql (id, host, port, `database`, user, password, `sql`, param, param_id) VALUES (6, 'localhost', 3306, 'tplatform', 'root', 'tx123456', 'SELECT id FROM zsi_test_case LIMIT 1', 'id', 19);

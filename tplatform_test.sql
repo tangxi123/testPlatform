@@ -1,0 +1,1 @@
+INSERT INTO tplatform.test (id, test) VALUES (1, 'tests');
