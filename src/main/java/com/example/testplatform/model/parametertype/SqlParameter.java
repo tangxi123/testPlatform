@@ -1,12 +1,16 @@
 package com.example.testplatform.model.parametertype;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.springframework.web.bind.annotation.RestController;
 
+@JsonTypeName("SqlParameter")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SqlParameter implements Parameter {
     //对应的sql参数id
     private int id;
+//    //对应的type
+//    private String type;
     //数据库host
     private String host;
     //数据库端口
@@ -31,6 +35,14 @@ public class SqlParameter implements Parameter {
     public void setId(int id) {
         this.id = id;
     }
+
+//    public String getType() {
+//        return type;
+//    }
+//
+//    public void setType(String type) {
+//        this.type = type;
+//    }
 
     public String getHost() {
         return host;
