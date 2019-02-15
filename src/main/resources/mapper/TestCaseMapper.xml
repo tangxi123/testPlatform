@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.testplatform.mapper.TestCaseMapper">
+<mapper namespace="com.example.testplatform.mapper.TCasesMapper">
     <insert id="insertTestcase" parameterType="com.example.testplatform.model.Apis" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO test_case(testname, method, url, headers, parameters, expected,  created_at, updated_at)
+        INSERT INTO zsi_test_case(testname, method, url, headers, parameters, expected,  created_at, updated_at, suite, test_module, descs)
         VALUES (#{testname}, #{method},
                 #{url,javaType=java.net.URI,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.UriTypeHandler},
                 #{headers,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
                 #{parameters,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
                 #{expected,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
-                #{createdAt}, #{updatedAt})
+                #{createdAt}, #{updatedAt}, #{suite}, #{testModule },#{descs})
     </insert>
 
-    <resultMap id="testcaseResultMap" type="com.example.testplatform.model.Apis">
-        <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="expected" javaType="Map"
-                jdbcType="VARCHAR"
-                property="expected"/>
-    </resultMap>
-    <select id="selectApisByExpected" resultMap="testcaseResultMap" parameterType="Map">
-        SELECT * FROM test_case WHERE expected = #{expected}
-    </select>
+    <update id="updateTestcase" parameterType="com.example.testplatform.model.Apis" keyProperty="id">
+        UPDATE zsi_test_case SET
+            testname = #{testname},
+            method = #{method},
+            url = #{url,javaType=java.net.URI,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.UriTypeHandler},
+            headers = #{headers,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
+            parameters = #{parameters,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
+            expected =  #{expected,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
+            updated_at = #{updatedAt},
+            suite = #{suite},
+            test_module = #{testModule },
+            descs = #{descs}
+        WHERE id = #{id}
+    </update>
+
 
     <resultMap id="testATestcaseMap" type="com.example.testplatform.model.Apis">
         <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="expected" javaType="Map" jdbcType="VARCHAR" property="expected"/>
@@ -27,12 +34,41 @@
         <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="parameters" javaType="Map" jdbcType="VARCHAR" property="parameters"/>
         <result typeHandler="com.example.testplatform.handler.UriTypeHandler" column="url" javaType="java.net.URI" jdbcType="VARCHAR" property="url"/>
     </resultMap>
+    <select id="selectApisByExpected" resultMap="testATestcaseMap" parameterType="Map">
+        SELECT * FROM test_case WHERE expected = #{expected}
+    </select>
+
+    <select id="getAllTestcases" resultMap="testATestcaseMap" parameterType="Map">
+        SELECT * FROM zsi_test_case ORDER BY updated_at desc;
+    </select>
+
+
     <select id="selectApisByTestname" resultMap="testATestcaseMap" parameterType="String">
-        SELECT * FROM test_case WHERE testname = #{testname}
+        SELECT * FROM test_case WHERE testname = #{testname} ORDER BY updated_at desc;
+    </select>
+
+    <select id="selectApisById" resultMap="testATestcaseMap" parameterType="Long">
+        SELECT * FROM zsi_test_case WHERE id = #{id}
+    </select>
+
+    <select id="countTestcaseById" resultType="Integer" parameterType="Long">
+        SELECT COUNT(*) FROM zsi_test_case WHERE id = #{id}
+    </select>
+
+    <select id="selectApisByName" resultMap="testATestcaseMap" parameterType="String">
+        SELECT * FROM zsi_test_case WHERE testname LIKE CONCAT('%',#{name},'%');
+    </select>
+
+    <select id="selectApisByDescs" resultMap="testATestcaseMap" parameterType="String">
+        SELECT * FROM zsi_test_case WHERE descs LIKE #{descs} LIMIT 10;
     </select>
 
     <delete id="deleteTestcaseByTestname" parameterType="String">
             DELETE  FROM test_case WHERE testname = #{testname}
+    </delete>
+
+    <delete id="deleteTestcaseById" parameterType="Long">
+        DELETE  FROM zsi_test_case WHERE id = #{id}
     </delete>
 
     <update id="updateTestResult">
@@ -42,3 +78,5 @@
 
 
 </mapper>
+
+

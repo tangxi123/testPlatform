@@ -1,22 +1,22 @@
 package com.example.testplatform.payload;
 
 public class ApiResponse {
-    private boolean success;
+    private int code;
     private String message;
 
     public ApiResponse(){}
 
-    public ApiResponse(boolean success, String message){
-        this.success = success;
+    public ApiResponse(int code, String message){
+        this.code = code;
         this.message = message;
     }
 
-    public boolean getSuccess() {
-        return success;
+    public int getCode() {
+        return code;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getMessage() {

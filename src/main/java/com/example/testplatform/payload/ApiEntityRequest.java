@@ -1,11 +1,19 @@
 package com.example.testplatform.payload;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.http.HttpMethod;
 
 import java.net.URI;
 import java.util.Map;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiEntityRequest {
+    private Long id;
+
+    private String suite;
+
+    private String testmodule;
+
+    private String descs;
 
     private String testname;
 
@@ -18,6 +26,38 @@ public class ApiEntityRequest {
     private Map<String, String> parameters;
 
     private Map<String, ?> expected;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id){
+        this.id = id;
+    }
+
+    public String getSuite() {
+        return suite;
+    }
+
+    public void setSuite(String suite) {
+        this.suite = suite;
+    }
+
+    public String getTestmodule() {
+        return testmodule;
+    }
+
+    public void setTestmodule(String testModule) {
+        this.testmodule = testModule;
+    }
+
+    public String getDescs() {
+        return descs;
+    }
+
+    public void setDescs(String descs) {
+        this.descs = descs;
+    }
 
     public Map<String, ?> getExpected() {
         return expected;

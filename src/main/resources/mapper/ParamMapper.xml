@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.testplatform.mapper.ParamMapper">
+    <!--插入parameter主表数据-->
+    <insert id="insertParameter" parameterType="com.example.testplatform.model.ParameterWrapper">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO  zsi_parameter (name, descs, type) VALUES (#{name},#{descs},#{type})
+    </insert>
+
+    <!--插入类型为sql的parameter数据-->
+    <insert id="insertSqlParamter" parameterType="com.example.testplatform.model.parametertype.Parameter"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO zsi_parameter_type_sql (host, port, `database`, user, password, `sql`, param, param_id)
+                VALUES (#{host},#{port},#{database},#{user},#{password},#{sql},#{param},#{paramId})
+    </insert>
+    
+    <!--设置ParameterWrapper的resultMap-->
+    <resultMap id="parameterWrapperResult" type="com.example.testplatform.model.ParameterWrapper">
+        <id property="id" column="parameter_wrapper_id"/>
+        <result property="name"  column="name"/>
+        <result property="descs" column="descs"/>
+        <result property="type" column="type"/>
+        <association property="value" resultMap="valueResultMap"/>
+    </resultMap>
+
+    <!--设置sqlParameter的resultMap-->
+    <resultMap id="valueResultMap" type="com.example.testplatform.model.parametertype.SqlParameter">
+        <id property="id" column="parameter_sql_id"/>
+        <result property="host" column="host"/>
+        <result property="port" column="port"/>
+        <result property="database" column="database"/>
+        <result property="user" column="user"/>
+        <result property="password" column="password"/>
+        <result property="sql" column="sql"/>
+        <result property="param" column="param"/>
+        <result property="paramId" column="param_id"/>
+    </resultMap>
+
+    <!--查询parameter主表数据-->
+    <select id="selectParameterWrapperById" resultMap="parameterWrapperResult">
+        SELECT
+            zw.id as parameter_wrapper_id,
+            zw.name as name,
+            zw.descs as descs,
+            zw.type as type,
+            zpts.id as parameter_sql_id,
+            zpts.host as host,
+            zpts.port as port,
+            zpts.`database` as `database`,
+            zpts.user as user,
+            zpts.password as password,
+            zpts.`sql` as `sql`,
+            zpts.param as param,
+            zpts.param_id as param_id
+        FROM zsi_parameter zw LEFT JOIN zsi_parameter_type_sql zpts ON zw.id = zpts.param_id
+        WHERE zw.id = #{id}
+    </select>
+
+</mapper>

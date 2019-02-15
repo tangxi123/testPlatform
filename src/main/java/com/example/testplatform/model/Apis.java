@@ -1,5 +1,6 @@
 package com.example.testplatform.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.MultiValueMap;
 
@@ -7,9 +8,15 @@ import java.net.URI;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Map;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Apis {
     private Long id;
+
+    private String suite;
+
+    private String testModule;
+
+    private String descs;
 
     private String testname;
 
@@ -33,6 +40,30 @@ public class Apis {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getSuite() {
+        return suite;
+    }
+
+    public void setSuite(String suite) {
+        this.suite = suite;
+    }
+
+    public String getTestModule() {
+        return testModule;
+    }
+
+    public void setTestModule(String testModule) {
+        this.testModule = testModule;
+    }
+
+    public String getDescs() {
+        return descs;
+    }
+
+    public void setDescs(String descs) {
+        this.descs = descs;
     }
 
     public String getTestname() {
