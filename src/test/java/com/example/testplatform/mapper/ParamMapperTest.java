@@ -34,6 +34,14 @@ public class ParamMapperTest {
     }
 
     @Test
+    public void selectParameterWrapperByName() {
+        ParameterWrapper pw = paramMapper.selectParameterWrapperByName("testCaseId");
+        System.out.println(JacksonUtil.toJson(pw));
+        ParameterWrapper pws = JacksonUtil.fromJson(JacksonUtil.toJson(pw), new TypeReference<ParameterWrapper>(){});
+        System.out.println(JacksonUtil.toJson(pws));
+    }
+
+    @Test
     public void deserizeParamWrapper(){
 
     }

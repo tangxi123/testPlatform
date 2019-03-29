@@ -19,27 +19,27 @@ public class ParameterServiceTest {
     @Autowired
     ParameterService parameterService;
 
-    @Test
-    public void createParameterTest(){
-        //设置sql类型参数
-        SqlParameter sqlParameter = new SqlParameter();
-        sqlParameter.setHost("localhost");
-        sqlParameter.setPort("3306");
-        sqlParameter.setDatabase("tplatform");
-        sqlParameter.setUser("root");
-        sqlParameter.setPassword("tx123456");
-        sqlParameter.setSql("SELECT id FROM zsi_test_case LIMIT 1");
-        sqlParameter.setParam("id");
+//    @Test
+//    public void createParameterTest(){
+//        //设置sql类型参数
+//        SqlParameter sqlParameter = new SqlParameter();
+//        sqlParameter.setHost("localhost");
+//        sqlParameter.setPort("3306");
+//        sqlParameter.setDatabase("tplatform");
+//        sqlParameter.setUser("root");
+//        sqlParameter.setPassword("tx123456");
+//        sqlParameter.setSql("SELECT id FROM zsi_test_case LIMIT 1");
+//        sqlParameter.setParam("id");
+//
+//        //设置parameterWrapper参数
+//        ParameterWrapper parameterWrapper = new ParameterWrapper();
+//        parameterWrapper.setName("testCaseId");
+//        parameterWrapper.setDesc("从数据库中获取第一条测试用例Id");
+//        parameterWrapper.setType(ParameterType.SQL);
+//        parameterWrapper.setValue(sqlParameter);
+//
+//        parameterService.createParameter(parameterWrapper);
 
-        //设置parameterWrapper参数
-        ParameterWrapper parameterWrapper = new ParameterWrapper();
-        parameterWrapper.setName("testCaseId");
-        parameterWrapper.setDesc("从数据库中获取第一条测试用例Id");
-        parameterWrapper.setType(ParameterType.SQL);
-        parameterWrapper.setValue(sqlParameter);
-
-        parameterService.createParameter(parameterWrapper);
-
-    }
+//    }
 
 }

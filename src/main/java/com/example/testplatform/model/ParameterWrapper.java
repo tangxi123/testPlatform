@@ -19,6 +19,7 @@ public class ParameterWrapper{
     //参数类型
     private ParameterType type;
 
+    //参数
     private Parameter value;
 
 //    private Map<String,Object> value;

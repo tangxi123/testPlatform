@@ -15,8 +15,11 @@ public interface ParamMapper {
     //插入类型为sql的parameter数据
     int insertSqlParamter(Parameter sqlPara);
 
-    //查询parameter主表数据
+    //根据Id查询parameter主表数据
     ParameterWrapper selectParameterWrapperById(int id);
+
+    //根据参数名字查询parameter主表数据
+    ParameterWrapper selectParameterWrapperByName(String name);
 
 
 

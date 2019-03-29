@@ -1,12 +1,9 @@
-package com.example.testplatform.model.parametertype;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import org.springframework.web.bind.annotation.RestController;
-
-@JsonTypeName("SqlParameter")
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class SqlParameter implements Parameter {
+package com.example.testplatform.model.prepostactiontype;
+/**
+ * @author Tangx
+ * 2019-02-13 15:02
+ */
+public class SqlPrePostAction implements  PrePostAction{
     //对应的sql参数id
     private int id;
     //数据库host
@@ -21,10 +18,8 @@ public class SqlParameter implements Parameter {
     private String password;
     //sql语句
     private String sql;
-    //获取字段内容
-    private String param;
-    //parameter的Id
-    private int paramId;
+    //前后置动作的id
+    private int actionId;
 
     public int getId() {
         return id;
@@ -33,14 +28,6 @@ public class SqlParameter implements Parameter {
     public void setId(int id) {
         this.id = id;
     }
-
-//    public String getType() {
-//        return type;
-//    }
-//
-//    public void setType(String type) {
-//        this.type = type;
-//    }
 
     public String getHost() {
         return host;
@@ -90,22 +77,13 @@ public class SqlParameter implements Parameter {
         this.sql = sql;
     }
 
-    public String getParam() {
-        return param;
-    }
-
-    public void setParam(String param) {
-        this.param = param;
-    }
-
-
     @Override
-    public int getParamId() {
-        return paramId;
+    public int getActionId() {
+        return actionId;
     }
 
     @Override
-    public void setParamId(int paramId) {
-        this.paramId = paramId;
+    public void setActionId(int actionId) {
+        this.actionId = actionId;
     }
 }

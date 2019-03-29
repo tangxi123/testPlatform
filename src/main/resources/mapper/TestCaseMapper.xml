@@ -3,78 +3,110 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.testplatform.mapper.TCasesMapper">
     <insert id="insertTestcase" parameterType="com.example.testplatform.model.Apis" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO zsi_test_case(testname, method, url, headers, parameters, expected,  created_at, updated_at, suite, test_module, descs)
-        VALUES (#{testname}, #{method},
-                #{url,javaType=java.net.URI,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.UriTypeHandler},
-                #{headers,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
-                #{parameters,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
-                #{expected,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
-                #{createdAt}, #{updatedAt}, #{suite}, #{testModule },#{descs})
+        INSERT INTO zsi_test_case(test_name, method, url, headers, parameters, created_at, updated_at, suite,
+                                  test_module, descs, post_action_names,check_points,pre_action_names)
+        VALUES (#{testName},
+                #{method},
+                #{url,javaType=java.net.URI,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.TypeHandler},
+                #{headers,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.TypeHandler},
+                #{parameters},
+                #{createdAt},
+                #{updatedAt},
+                #{suite},
+                #{testModule },
+                #{descs},
+                #{postActionNames,javaType=List,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.TypeHandler},
+                #{checkPoints,javaType=List,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.TypeHandler},
+                #{preActionNames,javaType=List,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.TypeHandler})
     </insert>
 
     <update id="updateTestcase" parameterType="com.example.testplatform.model.Apis" keyProperty="id">
         UPDATE zsi_test_case SET
-            testname = #{testname},
+            test_name = #{testName},
             method = #{method},
             url = #{url,javaType=java.net.URI,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.UriTypeHandler},
             headers = #{headers,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
-            parameters = #{parameters,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
-            expected =  #{expected,javaType=Map,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.MapTypeHandler},
+            parameters = #{parameters},
             updated_at = #{updatedAt},
             suite = #{suite},
             test_module = #{testModule },
-            descs = #{descs}
+            descs = #{descs},
+            post_action_names = #{postActionNames,javaType=List,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.StrListTypeHandler},
+            check_points = #{checkPoints,javaType=List,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.ListTypeHandler},
+            pre_action_names = #{preActionNames,javaType=List,jdbcType=VARCHAR,typeHandler=com.example.testplatform.handler.StrListTypeHandler}
+        WHERE id = #{id}
+    </update>
+
+    <!--更新测试用例测试结果和测试时间-->
+    <update id="updateTestCaseTestResult" >
+        UPDATE tplatform.zsi_test_case SET
+            is_passed = #{status},
+            test_at = #{startTestTime}
         WHERE id = #{id}
     </update>
 
 
     <resultMap id="testATestcaseMap" type="com.example.testplatform.model.Apis">
-        <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="expected" javaType="Map" jdbcType="VARCHAR" property="expected"/>
-        <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="headers" javaType="Map" jdbcType="VARCHAR" property="headers"/>
-        <result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="parameters" javaType="Map" jdbcType="VARCHAR" property="parameters"/>
+        <result typeHandler="com.example.testplatform.handler.TypeHandler" column="expected" javaType="Map" jdbcType="VARCHAR" property="expected"/>
+        <result typeHandler="com.example.testplatform.handler.TypeHandler" column="headers" javaType="Map" jdbcType="VARCHAR" property="headers"/>
+        <!--<result typeHandler="com.example.testplatform.handler.MapTypeHandler" column="parameters" javaType="Map" jdbcType="VARCHAR" property="parameters"/>-->
         <result typeHandler="com.example.testplatform.handler.UriTypeHandler" column="url" javaType="java.net.URI" jdbcType="VARCHAR" property="url"/>
+        <result typeHandler="com.example.testplatform.handler.TypeHandler" column="check_points" javaType="java.util.List" jdbcType="VARCHAR" property="checkPoints"/>
+        <result typeHandler="com.example.testplatform.handler.TypeHandler" column="pre_action_names" javaType="java.util.List" jdbcType="VARCHAR" property="preActionNames"/>
+        <result typeHandler="com.example.testplatform.handler.TypeHandler" column="post_action_names" javaType="java.util.List" jdbcType="VARCHAR" property="postActionNames"/>
     </resultMap>
     <select id="selectApisByExpected" resultMap="testATestcaseMap" parameterType="Map">
         SELECT * FROM test_case WHERE expected = #{expected}
     </select>
 
     <select id="getAllTestcases" resultMap="testATestcaseMap" parameterType="Map">
-        SELECT * FROM zsi_test_case ORDER BY updated_at desc;
+        SELECT * FROM zsi_test_case ORDER BY updated_at DESC
     </select>
 
 
-    <select id="selectApisByTestname" resultMap="testATestcaseMap" parameterType="String">
-        SELECT * FROM test_case WHERE testname = #{testname} ORDER BY updated_at desc;
-    </select>
-
-    <select id="selectApisById" resultMap="testATestcaseMap" parameterType="Long">
+    <select id="selectApisById" resultMap="testATestcaseMap" parameterType="int">
         SELECT * FROM zsi_test_case WHERE id = #{id}
     </select>
 
-    <select id="countTestcaseById" resultType="Integer" parameterType="Long">
+    <select id="countTestcaseById" resultType="Integer" parameterType="int">
         SELECT COUNT(*) FROM zsi_test_case WHERE id = #{id}
     </select>
 
     <select id="selectApisByName" resultMap="testATestcaseMap" parameterType="String">
-        SELECT * FROM zsi_test_case WHERE testname LIKE CONCAT('%',#{name},'%');
+        SELECT * FROM zsi_test_case WHERE test_name LIKE CONCAT('%',#{name},'%');
     </select>
 
     <select id="selectApisByDescs" resultMap="testATestcaseMap" parameterType="String">
         SELECT * FROM zsi_test_case WHERE descs LIKE #{descs} LIMIT 10;
     </select>
 
-    <delete id="deleteTestcaseByTestname" parameterType="String">
-            DELETE  FROM test_case WHERE testname = #{testname}
+    <delete id="deleteTestcaseByTestName" parameterType="String">
+            DELETE  FROM zsi_test_case WHERE test_name = #{testName}
     </delete>
 
     <delete id="deleteTestcaseById" parameterType="Long">
         DELETE  FROM zsi_test_case WHERE id = #{id}
     </delete>
 
-    <update id="updateTestResult">
-        UPDATE test_case SET actual = #{actual}, is_passed = #{isPassed}, test_at = #{testAt}
-           WHERE testname = #{testname}
-    </update>
+    <select id="queryByFields" parameterType="Map" resultMap="testATestcaseMap">
+        SELECT * FROM zsi_test_case WHERE 1=1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="testName != null">
+            AND test_name LIKE concat('%',#{testName},'%')
+        </if>
+        <if test="descs != null">
+            AND descs LIKE concat('%',#{descs},'%')
+        </if>
+    </select>
+
+    <!--查询测试用例测试时间和测试结果-->
+    <select id="queryTestCaseTestResult" parameterType="int" resultType="Map">
+        SELECT is_passed,test_at FROM tplatform.zsi_test_case WHERE id = #{id}
+    </select>
+
+
 
 
 </mapper>

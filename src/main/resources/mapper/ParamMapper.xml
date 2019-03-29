@@ -39,7 +39,7 @@
         <result property="paramId" column="param_id"/>
     </resultMap>
 
-    <!--查询parameter主表数据-->
+    <!--根据Id查询parameter主表数据-->
     <select id="selectParameterWrapperById" resultMap="parameterWrapperResult">
         SELECT
             zw.id as parameter_wrapper_id,
@@ -57,6 +57,26 @@
             zpts.param_id as param_id
         FROM zsi_parameter zw LEFT JOIN zsi_parameter_type_sql zpts ON zw.id = zpts.param_id
         WHERE zw.id = #{id}
+    </select>
+
+    <!--根据参数名字查询parameter主表数据-->
+    <select id="selectParameterWrapperByName" resultMap="parameterWrapperResult">
+        SELECT
+        zw.id as parameter_wrapper_id,
+        zw.name as name,
+        zw.descs as descs,
+        zw.type as type,
+        zpts.id as parameter_sql_id,
+        zpts.host as host,
+        zpts.port as port,
+        zpts.`database` as `database`,
+        zpts.user as user,
+        zpts.password as password,
+        zpts.`sql` as `sql`,
+        zpts.param as param,
+        zpts.param_id as param_id
+        FROM zsi_parameter zw LEFT JOIN zsi_parameter_type_sql zpts ON zw.id = zpts.param_id
+        WHERE zw.name = #{name}
     </select>
 
 </mapper>

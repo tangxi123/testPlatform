@@ -1,7 +1,7 @@
 package com.example.testplatform.model.parametertype;
 
 /**
- * @author tangx
+ * @author Tangx
  * 2019-02-13 14:00
  */
 public enum ParameterType {

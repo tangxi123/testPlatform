@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.testplatform.mapper.PrePostMapper">
+    <!--插入prepostaction主表数据-->
+    <insert id="insertPrePostAction" parameterType="com.example.testplatform.model.PrePostActionWrapper">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO  zsi_prepostaction (name, descs, action_type) VALUES (#{name},#{descs},#{actionType})
+    </insert>
+
+    <!--插入类型为Sql的prepostactionsql从表数据-->
+    <insert id="insertSqlPrePostAction" parameterType="com.example.testplatform.model.prepostactiontype.PrePostAction"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO zsi_prepostaction_type_sql(host, port, `database`, user, password, `sql`, action_id)
+        VALUES (#{host},#{port},#{database},#{user},#{password},#{sql},#{actionId})
+    </insert>
+
+    <!--设置PrePostActionWrapper的resultMap-->
+    <resultMap id="prePostActionWrapperResult" type="com.example.testplatform.model.PrePostActionWrapper">
+        <id property="id" column="prepostaction_wrapper_id"/>
+        <result property="name"  column="name"/>
+        <result property="descs" column="descs"/>
+        <result property="actionType" column="action_type"/>
+        <association property="action" resultMap="actionResultMap"/>
+    </resultMap>
+
+    <!--设置sqlPrePostAction的resultMap-->
+    <resultMap id="actionResultMap" type="com.example.testplatform.model.prepostactiontype.SqlPrePostAction">
+        <id property="id" column="prepostaction_sql_id"/>
+        <result property="host" column="host"/>
+        <result property="port" column="port"/>
+        <result property="database" column="database"/>
+        <result property="user" column="user"/>
+        <result property="password" column="password"/>
+        <result property="sql" column="sql"/>
+        <result property="actionId" column="action_id"/>
+    </resultMap>
+
+    <!--根据Id查询prepostaction主表数据-->
+    <select id="selectPrePostActionWrapperById" resultMap="prePostActionWrapperResult">
+        SELECT
+        zw.id as prepostaction_wrapper_id,
+        zw.name as name,
+        zw.descs as descs,
+        zw.action_type as action_type,
+        zpts.id as prepostaction_sql_id,
+        zpts.host as host,
+        zpts.port as port,
+        zpts.`database` as `database`,
+        zpts.user as user,
+        zpts.password as password,
+        zpts.`sql` as `sql`,
+        zpts.action_id as action_id
+        FROM zsi_prepostaction zw LEFT JOIN zsi_prepostaction_type_sql zpts ON zw.id = zpts.action_id
+        WHERE zw.id = #{id}
+    </select>
+
+    <!--根据参数名字查询prepostaction主表数据-->
+    <select id="selectPrePostActionWrapperByName" resultMap="prePostActionWrapperResult">
+        SELECT
+            zw.id as prepostaction_wrapper_id,
+            zw.name as name,
+            zw.descs as descs,
+            zw.action_type as action_type,
+            zpts.id as prepostaction_sql_id,
+            zpts.host as host,
+            zpts.port as port,
+            zpts.`database` as `database`,
+            zpts.user as user,
+            zpts.password as password,
+            zpts.`sql` as `sql`,
+            zpts.action_id as action_id
+        FROM zsi_prepostaction zw LEFT JOIN zsi_prepostaction_type_sql zpts ON zw.id = zpts.action_id
+        WHERE zw.name = #{name}
+    </select>
+</mapper>

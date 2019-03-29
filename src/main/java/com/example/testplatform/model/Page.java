@@ -3,6 +3,7 @@ package com.example.testplatform.model;
 import java.util.List;
 
 public class Page<T> {
+
     private int pageNo;
     private int totalPageNo;
     private int totalCount;
